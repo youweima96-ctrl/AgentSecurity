@@ -1,0 +1,32 @@
+# Secrets — never commit
+guide/api_key.txt
+.env
+.env.*
+*.pem
+*_secret*
+*_key.txt
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+venv/
+.venv/
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+
+# Large / vendored binaries (re-download or clone locally)
+tools/aris
+tools/Auto-claude-code-research-in-sleep/
+
+# Hugging Face cache (optional local)
+.cache/
