@@ -19,6 +19,9 @@ build/
 venv/
 .venv/
 
+# Local scratch (do not version)
+tmp/
+
 # OS / IDE
 .DS_Store
 .idea/
