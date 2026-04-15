@@ -33,3 +33,6 @@ tools/Auto-claude-code-research-in-sleep/
 
 # Hugging Face cache (optional local)
 .cache/
+
+# SC1 result binary / large outputs（JSON 和小文件可提交，PNG 不提交）
+result/sc1/*.png
