@@ -29,19 +29,21 @@ fi
 
 echo "===== [2/5] 安装 PyTorch >= 2.6 + torchvision（同版本源，一次对齐）====="
 # torch 和 torchvision 必须来自同一个 CUDA tag 的索引，否则会版本冲突。
-# 若之前已装过旧版，先卸掉：
-conda run --prefix "${ENV_DIR}" pip uninstall -y torch torchvision torchaudio 2>/dev/null || true
-conda run --prefix "${ENV_DIR}" pip install \
+# 使用 python -m pip 避开 ~/.local/bin/pip 的路径污染问题。
+conda run --prefix "${ENV_DIR}" python -m pip uninstall -y torch torchvision torchaudio 2>/dev/null || true
+conda run --prefix "${ENV_DIR}" python -m pip install \
     "torch>=2.6" torchvision \
     --index-url "https://download.pytorch.org/whl/${TORCH_CUDA_TAG}"
 
 echo "===== [3/5] 安装其余依赖 ====="
-conda run --prefix "${ENV_DIR}" pip install -r "${REPO_ROOT}/requirements-sc1.txt"
+conda run --prefix "${ENV_DIR}" python -m pip install -r "${REPO_ROOT}/requirements-sc1.txt"
 
 echo "===== [4/5] 安装 huggingface_hub CLI（用于下载模型和登录）====="
-conda run --prefix "${ENV_DIR}" pip install -U huggingface_hub
+conda run --prefix "${ENV_DIR}" python -m pip install -U huggingface_hub
 
 echo "===== [5/5] 验证关键包版本 ====="
+# 先确保 pip 本身在新 env 里是最新的
+conda run --prefix "${ENV_DIR}" python -m pip install -U pip setuptools wheel -q
 conda run --prefix "${ENV_DIR}" python - <<'PYEOF'
 import torch, torchvision, transformers, matplotlib, numpy
 print(f"  torch         : {torch.__version__}")

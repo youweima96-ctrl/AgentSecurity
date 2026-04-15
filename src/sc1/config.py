@@ -40,9 +40,14 @@ LLM_DEVICE = resolve_torch_device(os.environ.get("SC1_LLM_DEVICE", "auto"))
 LLM_TEMPERATURE = float(os.environ.get("SC1_LLM_TEMPERATURE", "0.8"))
 LLM_MAX_NEW_TOKENS = int(os.environ.get("SC1_LLM_MAX_NEW", "256"))
 LLM_N_SAMPLES = int(os.environ.get("SC1_LLM_N_SAMPLES", "3"))
-LLM_SEEDS = [42, 1337, 7]
-if len(LLM_SEEDS) != LLM_N_SAMPLES:
-    raise ValueError("LLM_SEEDS length must equal LLM_N_SAMPLES")
+# Seed pool — extended so any N_SAMPLES ≤ 8 works without code changes.
+_SEED_POOL = [42, 1337, 7, 99, 2024, 314, 777, 12345]
+if LLM_N_SAMPLES < 1 or LLM_N_SAMPLES > len(_SEED_POOL):
+    raise ValueError(f"SC1_LLM_N_SAMPLES must be between 1 and {len(_SEED_POOL)}, got {LLM_N_SAMPLES}")
+LLM_SEEDS = _SEED_POOL[:LLM_N_SAMPLES]
+
+# device_map mode for LLM: "none" = single-card .to(device); "auto" = Accelerate multi-GPU
+LLM_DEVICE_MAP = os.environ.get("SC1_LLM_DEVICE_MAP", "none").strip().lower()
 
 # OpenAI-compatible HTTP API (used when LLM_BACKEND == openai)
 OPENAI_BASE_URL = os.environ.get("SC1_OPENAI_BASE_URL", "https://api.openai.com/v1").rstrip("/")

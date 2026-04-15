@@ -15,6 +15,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from sc1.config import (
     LLM_BACKEND,
     LLM_DEVICE,
+    LLM_DEVICE_MAP,
     LLM_MAX_NEW_TOKENS,
     LLM_MODEL_NAME,
     LLM_N_SAMPLES,
@@ -35,13 +36,17 @@ class _HuggingFaceLLMSampler:
     def __init__(self) -> None:
         self.tokenizer = AutoTokenizer.from_pretrained(LLM_MODEL_NAME, trust_remote_code=True)
         dtype = _llm_weight_dtype()
+
+        use_device_map = LLM_DEVICE_MAP == "auto"
         self.model = AutoModelForCausalLM.from_pretrained(
             LLM_MODEL_NAME,
-            torch_dtype=dtype,
-            device_map=None,
+            dtype=dtype,
+            device_map="auto" if use_device_map else None,
             trust_remote_code=True,
         )
-        self.model.to(LLM_DEVICE)
+        if not use_device_map:
+            self.model.to(LLM_DEVICE)
+        self._device = None if use_device_map else LLM_DEVICE
         self.model.eval()
         if self.tokenizer.pad_token_id is None:
             self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
@@ -62,7 +67,8 @@ class _HuggingFaceLLMSampler:
         user_message: str,
     ) -> Tuple[List[str], float]:
         prompt = self._build_prompt(history, user_message)
-        inputs = self.tokenizer(prompt, return_tensors="pt").to(LLM_DEVICE)
+        target = self._device or next(self.model.parameters()).device
+        inputs = self.tokenizer(prompt, return_tensors="pt").to(target)
         samples: List[str] = []
         t0 = time.time()
         input_len = inputs["input_ids"].shape[1]

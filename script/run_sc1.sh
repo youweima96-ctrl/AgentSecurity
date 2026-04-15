@@ -4,12 +4,14 @@
 # 用法：bash script/run_sc1.sh [--gpu <id>]
 #
 # 常用环境变量（export 后再运行可覆盖默认值）：
-#   SC1_LLM_MODEL       LLM 模型名（默认 meta-llama/Meta-Llama-3-8B-Instruct）
-#   SC1_LLM_DEVICE      GPU（默认 auto，即 cuda:0 / mps / cpu）
-#   SC1_NLI_DEVICE      默认同 SC1_LLM_DEVICE
-#   SC1_EMBED_DEVICE    默认同 SC1_LLM_DEVICE
-#   SC1_LLM_N_SAMPLES   默认 3
-#   SC1_LLM_TEMPERATURE 默认 0.8
+#   SC1_LLM_MODEL         LLM 模型名（默认 meta-llama/Meta-Llama-3-8B-Instruct）
+#   SC1_LLM_DEVICE        GPU（默认 auto，即 cuda:0 / mps / cpu）
+#   SC1_NLI_DEVICE        默认同 SC1_LLM_DEVICE
+#   SC1_EMBED_DEVICE      默认同 SC1_LLM_DEVICE
+#   SC1_LLM_N_SAMPLES     默认 3（可设 1–8，减少显存占用）
+#   SC1_LLM_MAX_NEW       默认 256（减少显存可设 96 / 128）
+#   SC1_LLM_TEMPERATURE   默认 0.8
+#   SC1_LLM_DEVICE_MAP    默认 none（单卡）；设为 auto 可跨多卡自动分层，缓解 OOM
 #
 # 示例：用 GPU 1
 #   bash script/run_sc1.sh --gpu 1
