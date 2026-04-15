@@ -4,6 +4,24 @@
 
 智能体安全相关科研：环境说明、文献笔记、SC1 信号方向性验证代码等。
 
+## 本仓库目录一览
+
+```
+repo/
+├── src/sc1/           # SC1 Python 包（config / 采样 / 熵 / 漂移 / 可视化 / __main__）
+├── data/sc1/          # 合成对话 JSON（Case A/B/C）
+├── result/            # 实验输出（如 result/sc1、result/0410）
+├── plan/              # 任务计划与执行书
+├── guide/             # 环境说明、研究大纲（勿提交 api_key.txt）
+├── paper/             # 论文 PDF
+├── script/            # 脚本与说明
+├── tools/skill/       # 随仓库同步的小型 skill（如 readpaper）
+├── requirements-sc1.txt
+└── README.md
+```
+
+上级工作区另有 **`extern/`**（大体积第三方，不同步），见 `../extern/README.md`。
+
 ## SC1（语义熵 + 嵌入漂移）
 
 依赖见 `requirements-sc1.txt`。建议在 **GPU 服务器** 上运行（需下载 Llama-3-8B-Instruct、NLI、SimCSE）。
