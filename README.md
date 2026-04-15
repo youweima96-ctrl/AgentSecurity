@@ -28,3 +28,18 @@ python -m sc1
 - 环境与服务器：`guide/试验环境与基本要求.md`
 - SC1 计划：`plan/sc1_plan.md`
 - SC1 执行细节：`plan/sc1_execution_brief.md`
+
+## GitHub 首次推送（本机未安装 `gh` 时需手动）
+
+1. 在 GitHub 新建仓库（建议 **Private**），不要勾选「用 README 初始化」，记下 SSH 或 HTTPS 地址。  
+2. 在本仓库根目录执行：
+
+```bash
+cd /path/to/agentsecurity
+git remote add origin git@github.com:<你的用户名>/<仓库名>.git
+# 或 HTTPS：git remote add origin https://github.com/<你的用户名>/<仓库名>.git
+git branch -M main
+git push -u origin main
+```
+
+3. 之后日常：`git pull` 再改代码 → `git add` / `git commit` → `git push`；过里程碑可 `git tag milestone/sc1-pass && git push --tags`。
