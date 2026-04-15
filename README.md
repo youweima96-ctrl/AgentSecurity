@@ -1,6 +1,8 @@
-# agentsecurity
+# agentsecurity（Git 仓库根目录）
 
-智能体安全相关科研仓库：环境说明、文献笔记、SC1 信号方向性验证代码等。
+本目录即 **GitHub 同步根目录**；工作区上级说明见仓库外 `../README.md`。
+
+智能体安全相关科研：环境说明、文献笔记、SC1 信号方向性验证代码等。
 
 ## SC1（语义熵 + 嵌入漂移）
 
@@ -9,7 +11,7 @@
 ```bash
 conda activate agentsecurity
 pip install -r requirements-sc1.txt
-cd /path/to/agentsecurity
+cd /path/to/agentsecurity/repo
 export PYTHONPATH=src
 python -m sc1
 ```
@@ -35,7 +37,7 @@ python -m sc1
 2. 在本仓库根目录执行：
 
 ```bash
-cd /path/to/agentsecurity
+cd /path/to/agentsecurity/repo
 git remote add origin git@github.com:<你的用户名>/<仓库名>.git
 # 或 HTTPS：git remote add origin https://github.com/<你的用户名>/<仓库名>.git
 git branch -M main
