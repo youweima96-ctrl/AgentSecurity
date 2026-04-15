@@ -27,8 +27,7 @@ tmp/
 .idea/
 .vscode/
 
-# Large / vendored binaries (re-download or clone locally)
-tools/aris
+# Optional: large third-party clone if placed under repo/tools by mistake
 tools/Auto-claude-code-research-in-sleep/
 
 # Hugging Face cache (optional local)
