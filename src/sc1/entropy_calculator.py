@@ -69,9 +69,10 @@ class EntropyCalculator:
         return out
 
     def compute_entropy(self, samples: List[str]) -> float:
-        if len(samples) <= 1:
+        cleaned = [s.strip() for s in samples if s.strip()]
+        if len(cleaned) <= 1:
             return 0.0
-        cluster_ids = self._cluster_samples(samples)
+        cluster_ids = self._cluster_samples(cleaned)
         counts: Dict[int, int] = {}
         for cid in cluster_ids:
             counts[cid] = counts.get(cid, 0) + 1

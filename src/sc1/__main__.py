@@ -39,7 +39,7 @@ def quantitative_check(results: List[Dict[str, Any]]) -> Dict[str, Any]:
     d_seq_c = c["D_sequence"]
     d_max_turn = int(d_seq_c.index(max(d_seq_c)) + 1)
 
-    c51 = a["H_slope"] > 0
+    c51 = a.get("H_split_diff", 0.0) > 0
     c52 = _std(case_map["case_b"]["summary"]["H_sequence"]) < _std(case_map["case_a"]["summary"]["H_sequence"])
     c53_exact = d_max_turn == 6
     c53_relaxed = 5 <= d_max_turn <= 7
@@ -61,11 +61,37 @@ def quantitative_check(results: List[Dict[str, Any]]) -> Dict[str, Any]:
     print(f"\n  Overall (5.3 exact turn==6): {'PASS' if all_exact else 'FAIL'}")
     print(f"  Overall (5.3 relaxed peak in turns 5–7): {'PASS' if all_relaxed_d else 'FAIL'}")
 
+    case_b = case_map["case_b"]
+    timing_b = case_b.get("timing", {})
+    n_turns_b = len(case_b["summary"].get("H_sequence", []))
+    sig_sec = float(timing_b.get("signal_compute_sec", 0.0))
+    samp_sec = float(timing_b.get("sampling_total_sec", 0.0))
+    per_turn_signal = sig_sec / n_turns_b if n_turns_b else 0.0
+    per_turn_all = (sig_sec + samp_sec) / n_turns_b if n_turns_b else 0.0
+    phase6 = {
+        "case_b_turns": n_turns_b,
+        "entropy_compute_sec": timing_b.get("entropy_compute_sec"),
+        "drift_compute_sec": timing_b.get("drift_compute_sec"),
+        "signal_compute_sec": timing_b.get("signal_compute_sec"),
+        "sampling_total_sec": timing_b.get("sampling_total_sec"),
+        "per_turn_signal_sec": round(per_turn_signal, 4),
+        "per_turn_signal_plus_sampling_sec": round(per_turn_all, 4),
+        "meets_15s_per_turn_signal_only": per_turn_signal <= 15.0,
+        "meets_15s_per_turn_including_sampling": per_turn_all <= 15.0,
+    }
+    print("\n=== Phase 6 — Compute cost (Case B) ===")
+    for k, v in phase6.items():
+        print(f"  {k}: {v}")
+
     return {
         "checks": checks,
         "D_max_turn_case_c": d_max_turn,
         "all_pass_strict_5.3_exact": all_exact,
         "all_pass_with_relaxed_d_peak": all_relaxed_d,
+        "phase6_timing_case_b": phase6,
+        "notes": {
+            "5.1": "Uses H_split_diff = mean(H,t=6–10) − mean(H,t=1–5) per sc1_plan.md",
+        },
     }
 
 
@@ -86,7 +112,7 @@ def main() -> None:
         print(f"\n  {result['case_id']} Summary:")
         print(f"    H_sequence: {s['H_sequence']}")
         print(f"    D_sequence: {s['D_sequence']}")
-        print(f"    H_mean={s['H_mean']}, H_slope={s['H_slope']}")
+        print(f"    H_mean={s['H_mean']}, H_slope={s['H_slope']}, H_split_diff={s.get('H_split_diff')}")
         print(f"    D_mean={s['D_mean']}, D_max at turn {s['D_max_turn']}")
 
     plot_sc1_signals(all_results)

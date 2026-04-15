@@ -33,7 +33,8 @@ python -m sc1
 
 - 对话：`data/sc1/conversations/*.json`
 - 输出：`result/sc1/`
-- 设备：`SC1_LLM_DEVICE`、`SC1_NLI_DEVICE`、`SC1_EMBED_DEVICE` 等（见 `src/sc1/config.py`）
+- 设备：默认 `SC1_*_DEVICE=auto`（CUDA → MPS → CPU）；也可显式指定 `SC1_LLM_DEVICE` 等（见 `src/sc1/config.py`）。
+- 无本地 8B 时：`SC1_LLM_BACKEND=openai` 且设置 `SC1_OPENAI_API_KEY`（或 `OPENAI_API_KEY`），`SC1_LLM_MODEL` 填 API 模型名；可选 `SC1_OPENAI_BASE_URL`。
 
 ## 安全
 

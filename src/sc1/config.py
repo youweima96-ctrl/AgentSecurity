@@ -5,12 +5,38 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
+import torch
+
 # Repository root = parent of `src/`
 _ROOT = Path(__file__).resolve().parents[2]
 
+
+def resolve_torch_device(requested: str) -> str:
+    """Map ``auto`` / unavailable CUDA to a usable device (cuda → mps → cpu)."""
+    r = (requested or "auto").strip()
+    rl = r.lower()
+    if rl == "auto":
+        if torch.cuda.is_available():
+            return "cuda:0"
+        if getattr(torch.backends, "mps", None) is not None and torch.backends.mps.is_available():
+            return "mps"
+        return "cpu"
+    if rl.startswith("cuda") and not torch.cuda.is_available():
+        if getattr(torch.backends, "mps", None) is not None and torch.backends.mps.is_available():
+            return "mps"
+        return "cpu"
+    if rl == "mps" and not (
+        getattr(torch.backends, "mps", None) is not None and torch.backends.mps.is_available()
+    ):
+        return "cpu"
+    return r
+
+
 # ── Models ─────────────────────────────────────────────────
+# hf: local Transformers; openai: Chat Completions API (set SC1_OPENAI_API_KEY).
+LLM_BACKEND = os.environ.get("SC1_LLM_BACKEND", "hf").strip().lower()
 LLM_MODEL_NAME = os.environ.get("SC1_LLM_MODEL", "meta-llama/Meta-Llama-3-8B-Instruct")
-LLM_DEVICE = os.environ.get("SC1_LLM_DEVICE", "cuda:0")
+LLM_DEVICE = resolve_torch_device(os.environ.get("SC1_LLM_DEVICE", "auto"))
 LLM_TEMPERATURE = float(os.environ.get("SC1_LLM_TEMPERATURE", "0.8"))
 LLM_MAX_NEW_TOKENS = int(os.environ.get("SC1_LLM_MAX_NEW", "256"))
 LLM_N_SAMPLES = int(os.environ.get("SC1_LLM_N_SAMPLES", "3"))
@@ -18,12 +44,16 @@ LLM_SEEDS = [42, 1337, 7]
 if len(LLM_SEEDS) != LLM_N_SAMPLES:
     raise ValueError("LLM_SEEDS length must equal LLM_N_SAMPLES")
 
+# OpenAI-compatible HTTP API (used when LLM_BACKEND == openai)
+OPENAI_BASE_URL = os.environ.get("SC1_OPENAI_BASE_URL", "https://api.openai.com/v1").rstrip("/")
+OPENAI_API_KEY = os.environ.get("SC1_OPENAI_API_KEY") or os.environ.get("OPENAI_API_KEY", "")
+
 NLI_MODEL_NAME = os.environ.get("SC1_NLI_MODEL", "cross-encoder/nli-deberta-v3-large")
 NLI_ENTAILMENT_THRESHOLD = float(os.environ.get("SC1_NLI_THRESHOLD", "0.7"))
-NLI_DEVICE = os.environ.get("SC1_NLI_DEVICE", "cuda:0")
+NLI_DEVICE = resolve_torch_device(os.environ.get("SC1_NLI_DEVICE", "auto"))
 
 EMBED_MODEL_NAME = os.environ.get("SC1_EMBED_MODEL", "princeton-nlp/sup-simcse-roberta-base")
-EMBED_DEVICE = os.environ.get("SC1_EMBED_DEVICE", "cuda:0")
+EMBED_DEVICE = resolve_torch_device(os.environ.get("SC1_EMBED_DEVICE", "auto"))
 
 # ── Paths ─────────────────────────────────────────────────
 CONV_DIR = Path(

@@ -32,7 +32,8 @@ class DriftCalculator:
         return emb.squeeze(0)
 
     def compute_drift_sequence(self, responses: List[str]) -> List[Optional[float]]:
-        embeddings = [self._encode(r) for r in responses]
+        safe = [r if r.strip() else " " for r in responses]
+        embeddings = [self._encode(r) for r in safe]
         drift_values: List[Optional[float]] = [None]
         for i in range(1, len(embeddings)):
             cos_sim = float(torch.dot(embeddings[i], embeddings[i - 1]).item())
