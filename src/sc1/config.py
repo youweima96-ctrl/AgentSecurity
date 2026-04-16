@@ -72,6 +72,10 @@ LLM_DEVICE_MAP = os.environ.get("SC1_LLM_DEVICE_MAP", "none").strip().lower()
 OPENAI_BASE_URL = os.environ.get("SC1_OPENAI_BASE_URL", "https://api.openai.com/v1").rstrip("/")
 OPENAI_API_KEY = os.environ.get("SC1_OPENAI_API_KEY") or os.environ.get("OPENAI_API_KEY", "")
 
+NLI_MODEL_NAME = os.environ.get("SC1_NLI_MODEL", "cross-encoder/nli-deberta-v3-large")
+NLI_ENTAILMENT_THRESHOLD = float(os.environ.get("SC1_NLI_THRESHOLD", "0.7"))
+NLI_DEVICE = resolve_torch_device(os.environ.get("SC1_NLI_DEVICE", "auto"))
+
 # ── Uncertainty / Entropy options ─────────────────────────
 # nli_entropy: legacy semantic entropy
 # embed_dispersion: mean pairwise embedding distance of samples
@@ -94,10 +98,6 @@ if _W_SUM <= 0:
 U_WEIGHT_NLI /= _W_SUM
 U_WEIGHT_DISP /= _W_SUM
 U_WEIGHT_DISAGR /= _W_SUM
-
-NLI_MODEL_NAME = os.environ.get("SC1_NLI_MODEL", "cross-encoder/nli-deberta-v3-large")
-NLI_ENTAILMENT_THRESHOLD = float(os.environ.get("SC1_NLI_THRESHOLD", "0.7"))
-NLI_DEVICE = resolve_torch_device(os.environ.get("SC1_NLI_DEVICE", "auto"))
 
 EMBED_MODEL_NAME = os.environ.get("SC1_EMBED_MODEL", "princeton-nlp/sup-simcse-roberta-base")
 EMBED_DEVICE = resolve_torch_device(os.environ.get("SC1_EMBED_DEVICE", "auto"))
