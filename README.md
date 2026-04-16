@@ -36,6 +36,24 @@ python -m sc1
 - 设备：默认 `SC1_*_DEVICE=auto`（CUDA → MPS → CPU）；也可显式指定 `SC1_LLM_DEVICE` 等（见 `src/sc1/config.py`）。
 - 无本地 8B 时：`SC1_LLM_BACKEND=openai` 且设置 `SC1_OPENAI_API_KEY`（或 `OPENAI_API_KEY`），`SC1_LLM_MODEL` 填 API 模型名；可选 `SC1_OPENAI_BASE_URL`。
 
+### SC1-ABC（大改版一键批跑）
+
+```bash
+cd /path/to/agentsecurity/repo
+conda activate agentsecurity
+bash script/run_sc1_abc_batch.sh --gpu 0 --max-new 96 --samples 8 --repeats 2
+```
+
+- 输出目录：`result/sc1_abc_<mmdd>/`
+- 自动生成：`summary_legacy.txt`、`summary_abc.txt`、`aggregate_results_abc.json`
+- 关键可调项（可做矩阵批跑）：
+  - `--temps`：温度列表（逗号分隔）
+  - `--modes`：`hybrid,nli_entropy_norm,embed_dispersion,...`
+  - `--thresholds`：主阈值列表（逗号分隔）
+  - `--repeats`：每个组合重复次数
+  - `--samples`：每轮采样数（建议 6~8）
+  - `--cases`：自定义 case 文件列表（逗号分隔，默认 A/B/C）
+
 ## 安全
 
 勿提交 `guide/api_key.txt` 及任何密钥。

@@ -12,6 +12,9 @@
 #   SC1_LLM_MAX_NEW       默认 256（减少显存可设 96 / 128）
 #   SC1_LLM_TEMPERATURE   默认 0.8
 #   SC1_LLM_DEVICE_MAP    默认 none（单卡）；设为 auto 可跨多卡自动分层，缓解 OOM
+#   SC1_UNCERTAINTY_MODE  默认 hybrid（可设 nli_entropy / embed_dispersion 等）
+#   SC1_NLI_THRESHOLD     默认 0.7
+#   SC1_NLI_THRESHOLD_SWEEP 默认 0.60,0.70,0.80
 #
 # 示例：用 GPU 1
 #   bash script/run_sc1.sh --gpu 1
