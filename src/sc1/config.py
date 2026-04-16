@@ -72,14 +72,14 @@ LLM_DEVICE_MAP = os.environ.get("SC1_LLM_DEVICE_MAP", "none").strip().lower()
 OPENAI_BASE_URL = os.environ.get("SC1_OPENAI_BASE_URL", "https://api.openai.com/v1").rstrip("/")
 OPENAI_API_KEY = os.environ.get("SC1_OPENAI_API_KEY") or os.environ.get("OPENAI_API_KEY", "")
 
-NLI_MODEL_NAME = os.environ.get("SC1_NLI_MODEL", "cross-encoder/nli-deberta-v3-large")
-NLI_ENTAILMENT_THRESHOLD = float(os.environ.get("SC1_NLI_THRESHOLD", "0.7"))
-NLI_DEVICE = resolve_torch_device(os.environ.get("SC1_NLI_DEVICE", "auto"))
-
 # ── Uncertainty / Entropy options ─────────────────────────
 # nli_entropy: legacy semantic entropy
 # embed_dispersion: mean pairwise embedding distance of samples
 # hybrid: weighted fusion of normalized NLI entropy + embedding dispersion + disagreement ratio
+NLI_MODEL_NAME = os.environ.get("SC1_NLI_MODEL", "cross-encoder/nli-deberta-v3-large")
+NLI_ENTAILMENT_THRESHOLD = float(os.environ.get("SC1_NLI_THRESHOLD", "0.7"))
+NLI_DEVICE = resolve_torch_device(os.environ.get("SC1_NLI_DEVICE", "auto"))
+
 UNCERTAINTY_MODE = os.environ.get("SC1_UNCERTAINTY_MODE", "hybrid").strip().lower()
 NLI_THRESHOLD_SWEEP = _parse_csv_floats(
     os.environ.get("SC1_NLI_THRESHOLD_SWEEP", "0.60,0.70,0.80"),
