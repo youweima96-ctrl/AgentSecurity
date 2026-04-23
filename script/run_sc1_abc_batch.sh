@@ -117,14 +117,17 @@ for MODE in "${MODES[@]}"; do
                 mkdir -p "${RUN_DIR}"
                 LOG_FILE="${RUN_DIR}/run.log"
                 RUN_LABEL="mode=${MODE};th=${TH};temp=${TEMP};rep=${REP};idx=${RUN_IDX}"
+                SEED_OFFSET=$((RUN_IDX * 1000))
 
                 echo "----------------------------------------------"
                 echo "  [${RUN_IDX}/${N_TOTAL}] ${RUN_LABEL}"
+                echo "  seed_offset=${SEED_OFFSET}"
                 echo "  -> ${RUN_DIR}"
                 echo "----------------------------------------------"
                 if SC1_UNCERTAINTY_MODE="${MODE}" \
                    SC1_NLI_THRESHOLD="${TH}" \
                    SC1_LLM_TEMPERATURE="${TEMP}" \
+                   SC1_SEED_OFFSET="${SEED_OFFSET}" \
                    SC1_RUN_LABEL="${RUN_LABEL}" \
                    SC1_RESULTS_DIR="${RUN_DIR}" \
                    "${PYTHON}" -m sc1 2>&1 | tee "${LOG_FILE}"; then

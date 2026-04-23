@@ -142,6 +142,7 @@ def quantitative_check(results: List[Dict[str, Any]]) -> Dict[str, Any]:
             "nli_threshold_sweep": os.environ.get("SC1_NLI_THRESHOLD_SWEEP"),
             "llm_temperature": os.environ.get("SC1_LLM_TEMPERATURE"),
             "llm_n_samples": os.environ.get("SC1_LLM_N_SAMPLES"),
+            "seed_offset": os.environ.get("SC1_SEED_OFFSET"),
             "case_files": os.environ.get("SC1_CASE_FILES", ""),
             "run_label": os.environ.get("SC1_RUN_LABEL", ""),
         },

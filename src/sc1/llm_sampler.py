@@ -72,9 +72,13 @@ class _HuggingFaceLLMSampler:
         samples: List[str] = []
         t0 = time.time()
         input_len = inputs["input_ids"].shape[1]
+        seed_offset = int(os.environ.get("SC1_SEED_OFFSET", "0") or 0)
 
-        for seed in LLM_SEEDS[:LLM_N_SAMPLES]:
-            torch.manual_seed(seed)
+        for idx, seed in enumerate(LLM_SEEDS[:LLM_N_SAMPLES]):
+            actual_seed = int(seed_offset + seed + idx * 100003)
+            torch.manual_seed(actual_seed)
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed_all(actual_seed)
             with torch.no_grad():
                 output_ids = self.model.generate(
                     **inputs,
@@ -164,8 +168,10 @@ class _OpenAIHttpLLMSampler:
         messages = list(history) + [{"role": "user", "content": user_message}]
         samples: List[str] = []
         t0 = time.time()
-        for seed in LLM_SEEDS[:LLM_N_SAMPLES]:
-            samples.append(self._complete(messages, int(seed)))
+        seed_offset = int(os.environ.get("SC1_SEED_OFFSET", "0") or 0)
+        for idx, seed in enumerate(LLM_SEEDS[:LLM_N_SAMPLES]):
+            actual_seed = int(seed_offset + seed + idx * 100003)
+            samples.append(self._complete(messages, actual_seed))
         return samples, time.time() - t0
 
     def run_conversation(self, turns: List[Dict[str, Any]]) -> Dict[str, Any]:
